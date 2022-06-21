@@ -1,18 +1,27 @@
 import {Component} from "react";
+import {baseUrl} from "../App";
+
+const emptyItem = {
+    card_holder_name: '',
+    card_no: '',
+    credit_limit: '',
+    isError: {
+        card_holder_name: '',
+        card_no: '',
+        credit_limit: ''
+    }
+};
 
 export class CreditCardAdd extends Component {
 
-    emptyItem = {
-        card_holder_name: '',
-        card_no: '',
-        credit_limit: '',
-        isError: {
-            card_holder_name: '',
-            card_no: '',
-            credit_limit: ''
-        }
-    };
-
+    constructor(props) {
+        super(props);
+        this.state = {
+            item: emptyItem
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
 
     formValid = ({isError, ...rest}) => {
         let isValid = false;
@@ -33,19 +42,9 @@ export class CreditCardAdd extends Component {
         return isValid;
     };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            item: this.emptyItem
-        };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
     regExp = RegExp(
         /^\d+$/
     )
-
 
     handleChange(event) {
         const target = event.target;
@@ -65,7 +64,7 @@ export class CreditCardAdd extends Component {
                 break;
             case "credit_limit":
                 isError.credit_limit =
-                    value.length === 0 ? "Credit limit is required" : "";
+                    this.regExp.test(value) ? "" : "Credit limit is required and should be numeric";
                 break;
             default:
                 break;
@@ -79,11 +78,9 @@ export class CreditCardAdd extends Component {
     async handleSubmit(event) {
         event.preventDefault();
         if (this.formValid(this.state.item)) {
-            console.log(this.state)
-
             const {item} = this.state;
-            console.log("hi" + JSON.stringify(item))
-            await fetch('http://localhost:8080/creditCard', {
+
+            await fetch(baseUrl + '/creditCard', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -95,8 +92,8 @@ export class CreditCardAdd extends Component {
                     if (data.errors) {
                         alert(data.errors)
                     } else {
-                        this.setState({item: this.emptyItem})
-                        this.props.onAddingNewCard()
+                        this.reset()
+                        this.props.func()
                     }
 
                 });
@@ -105,9 +102,12 @@ export class CreditCardAdd extends Component {
         }
     }
 
+    reset(){
+        this.setState({item:emptyItem});
+    }
 
     render() {
-
+        const {item} = this.state;
         const {isError} = this.state.item;
         return (
             <div className="container pt-5">
@@ -120,6 +120,7 @@ export class CreditCardAdd extends Component {
                             type="text"
                             className={isError.card_holder_name.length > 0 ? "is-invalid form-control" : "form-control"}
                             name="card_holder_name"
+                            value={item.card_holder_name || ''}
                             onChange={this.handleChange}
                         />
                         {isError.card_holder_name.length > 0 && (
@@ -132,6 +133,7 @@ export class CreditCardAdd extends Component {
                             type="text"
                             className={isError.card_no.length > 0 ? "is-invalid form-control" : "form-control"}
                             name="card_no"
+                            value={item.card_no || ''}
                             onChange={this.handleChange}
                         />
                         {isError.card_no.length > 0 && (
@@ -141,17 +143,19 @@ export class CreditCardAdd extends Component {
                     <div className="form-group">
                         <label>Limit</label>
                         <input
-                            type="number"
+                            type="text"
                             className={isError.credit_limit.length > 0 ? "is-invalid form-control" : "form-control"}
                             name="credit_limit"
+                            value={item.credit_limit || ''}
                             onChange={this.handleChange}
                         />
                         {isError.credit_limit.length > 0 && (
                             <span className="invalid-feedback">{isError.credit_limit}</span>
                         )}
                     </div>
-                    <input className="btn btn-secondary" type="submit"/>
+                    <input className="btn btn-secondary" type="submit" value="Add"/>
                 </form>
+
             </div>
         );
     }

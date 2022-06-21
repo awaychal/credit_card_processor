@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -96,27 +95,4 @@ public class CreditCardControllerTest {
 
     }
 
-   /* @Test
-    public void createCreditCard_requiredFieldsCheck() throws Exception {
-        CreditCard creditCard = new CreditCard();
-        creditCard.setCard_holder_name("");
-        creditCard.setCard_no("");
-        creditCard.setCredit_limit(null);
-
-        Mockito.when(creditCardController.createCreditCard(creditCard)).thenReturn(creditCard);
-        mockMvc.perform(post("/creditCard")
-                        .contentType(APPLICATION_JSON)
-                        .content(this.mapper.writeValueAsString(creditCard)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.timestamp", is(notNullValue())))
-                .andExpect(jsonPath("$.status", is(400)))
-                .andExpect(jsonPath("$.errors").isArray())
-                .andExpect(jsonPath("$.errors", hasSize(3)))
-                .andExpect(jsonPath("$.errors", hasItem("Please provide a card number.")))
-                .andExpect(jsonPath("$.errors", hasItem("Please provide a credit limit")))
-                .andExpect(jsonPath("$.errors", hasItem("Please provide a name.")))
-
-                ;
-
-    }*/
 }

@@ -39,6 +39,19 @@ class App extends Component{
         this.getCreditCardList();
     }
 
+    formatCreditCardNo(cardNo) {
+        var parts = []
+        for (var i=0, len=cardNo.length; i<len; i+=4) {
+            parts.push(cardNo.substring(i, i+4))
+        }
+
+        if (parts.length) {
+            return parts.join(' ')
+        } else {
+            return cardNo
+        }
+    }
+
     render() {
         const {creditCards} = this.state;
         return (
@@ -63,9 +76,9 @@ class App extends Component{
                                 creditCard =>
                                     <tr key = {creditCard.card_no}>
                                         <td> {creditCard.card_holder_name}</td>
-                                        <td> {creditCard.card_no}</td>
-                                        <td> {creditCard.balance}</td>
-                                        <td> {creditCard.credit_limit}</td>
+                                        <td> {this.formatCreditCardNo(creditCard.card_no)}</td>
+                                        <td> £{creditCard.balance}</td>
+                                        <td> £{creditCard.credit_limit}</td>
                                     </tr>
                             )
                         }
